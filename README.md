@@ -1,1 +1,1 @@
-# rin-Readme
+README.md assignment example
