@@ -41,6 +41,8 @@ public class Lab3{
 		}
 		boolean word = l3.containsWord("Hi My name is rin Chheng", "rin");
 		System.out.println(word);
+		
+		System.out.println("testing");
 	}
 
 }
