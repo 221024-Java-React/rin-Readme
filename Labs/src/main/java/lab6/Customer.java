@@ -1,6 +1,6 @@
 package lab6;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 public abstract class Customer {
 	protected String name;

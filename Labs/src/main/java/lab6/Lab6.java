@@ -1,6 +1,6 @@
 package lab6;
 
-import java.util.Scanner;
+//import java.util.Scanner;
 
 public class Lab6{
 	
