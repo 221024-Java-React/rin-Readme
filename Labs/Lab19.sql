@@ -33,6 +33,10 @@ alter table employee add constraint FK_employeeDepartmentId
 alter table employee add constraint FK_employeeLocationId
 	foreign key (_location) references _location (location_id);
 
+ALTER TABLE employee 
+ALTER COLUMN _location
+DROP NOT NULL;
+
 INSERT INTO department VALUES (1, 'ACCOUNTING', 2000);
 INSERT INTO department VALUES (2, 'MARKETING', 3000);
 INSERT INTO department VALUES (3, 'INFORMATION TECHNOLOGY', 4000);
@@ -55,13 +59,13 @@ delete from employee where employee_id is not null;
 INSERT INTO employee VALUES (1, 'JOHN SMITH', DATE '1994-01-01', 2000, 1, DATE '2015-03-28', 'AC_ACCOUNT', NULL, 1);
 INSERT INTO employee VALUES (2, 'JAMES BOSH', DATE '1990-06-14', 3200, 2, DATE '2016-05-28', 'MK_REP', NULL, 2);
 INSERT INTO employee VALUES (3, 'LISA JACKSON', DATE '1992-09-08', 3800.00, 3, DATE '2017-02-02', 'IT_PROF', NULL, 3);
---INSERT INTO employee VALUES (4, 'ANGELA DEAN', DATE '1986-05-15', 2000.00, 3, DATE '2015-03-28', 'IT_PROF',3, NULL);
+INSERT INTO employee VALUES (4, 'ANGELA DEAN', DATE '1986-05-15', 2000.00, 3, DATE '2015-03-28', 'IT_PROF',3, NULL);
 INSERT INTO employee VALUES (5, 'NIGEL OAKS', DATE '1990-09-24', 2500.00, 2, DATE '2018-01-03', 'MK_REP',2, 2);
 INSERT INTO employee VALUES (6, 'JAMES BOND', DATE '1994-11-13', 2800.00, 2, DATE '2017-05-05', 'MK_REP',2, 3);
---INSERT INTO employee VALUES (7, 'JILLIAN KYND', DATE '1980-10-15', 2840.00, 1, DATE '2015-05-11', 'AC_ACCOUNT', 1, NULL);
+INSERT INTO employee VALUES (7, 'JILLIAN KYND', DATE '1980-10-15', 2840.00, 1, DATE '2015-05-11', 'AC_ACCOUNT', 1, NULL);
 INSERT INTO employee VALUES (8, 'TIM KIBBEL', DATE '1980-05-20', 2240.00, 2, DATE '2014-07-28', 'MK_REP', 2, 1);
 INSERT INTO employee VALUES (9, 'ETHELIN COMINI', DATE '1982-06-16', 3380.00, 3, DATE '2017-10-02', 'IT_DEV', 3, 1);
---INSERT INTO employee VALUES (10, 'JASE HANDLEY', DATE '1975-10-08', 1870.00, 5, DATE '2017-08-17', 'LG_LAW',11, NULL);
+INSERT INTO employee VALUES (10, 'JASE HANDLEY', DATE '1975-10-08', 1870.00, 5, DATE '2017-08-17', 'LG_LAW',11, NULL);
 INSERT INTO employee VALUES (11, 'ARIEL PAVIS', DATE '1981-09-23', 4500.00, 5, DATE '2015-07-12', 'LG_LAW', NULL, 2);
 INSERT INTO employee VALUES (12, 'MELISSA ITZKOVSKY', DATE '1983-03-03', 3870.00, 5, DATE '2014-09-15', 'LG_LAW',11, 2);
 INSERT INTO employee VALUES (13, 'MALIA FILISOV', DATE '1976-07-11', 4620.00, 6, DATE '2014-11-09', 'CS_REP', NULL, 2);
@@ -71,7 +75,7 @@ INSERT INTO employee VALUES (16, 'LUCILLE HUNE', DATE '1994-01-04', 2300.00, 2, 
 INSERT INTO employee VALUES (17, 'PETA POLTZOLD', DATE '1990-09-24', 2500.00, 3, DATE '2015-07-10', 'IT_DEV',3, 3);
 INSERT INTO employee VALUES (18, 'LYDIA POVER', DATE '1991-10-01', 2800.00, 3, DATE '2016-08-03', 'IT_DEV', NULL, 3);
 INSERT INTO employee VALUES (19, 'RON WINTERTON', DATE '1977-09-27', 2500.00, 5, DATE '2018-02-23', 'LG_LAW', 11, 3);
---INSERT INTO employee VALUES (20, 'NITIN CHESTNUT', DATE '1995-01-18', 2800.00, 6, DATE '2014-10-25', 'CS_REP', 13, NULL);
+INSERT INTO employee VALUES (20, 'NITIN CHESTNUT', DATE '1995-01-18', 2800.00, 6, DATE '2014-10-25', 'CS_REP', 13, NULL);
 
 select * from employee;
 
@@ -97,14 +101,49 @@ order by employee_name asc;
 
 --lab 19
 --task 1
-select e.department, e.employee_name  from employee e 
-inner join department d 
-	on e.department = d.department_id
-	order by department asc;
+select e.department, e.employee_name from employee e 
+	inner join department d 
+		on e.department = d.department_id
+	order by department;
 
 --task 2
-select d.department_id, e.employee_name from department d 
-right join employee e 
-	on d.department_id = e.department
+select d.department_id, e.employee_name from employee e 
+	right join department d 
+		on e.department = d.department_id
 	order by department_id;
+
+--task 3
+select e.employee_name, l.city from employee e 
+	left join _location l 
+		on e.employee_id = l.location_id
+	where e._location is not null
+	order by _location;
+
+--task 4
+(select d.department_id, e.employee_name, e._location  from department d 
+	inner join employee e 
+	 	on e.department = d.department_id and d.department_id = 1)
+union all
+(select e.department, e.employee_name, l.location_id  from _location l 
+	inner join employee e 
+	 	on e._location = l.location_id and l.location_id = 1);
+
+--task 5
+(select d.department_id, e.employee_name, e._location  from department d 
+	inner join employee e 
+	 	on e.department = d.department_id and d.department_id = 1)
+except
+(select e.department, e.employee_name, l.location_id  from _location l 
+	inner join employee e 
+	 	on e._location = l.location_id and l.location_id = 1);
+
+--task 6
+(select d.department_id, e.employee_name, e._location  from department d 
+	inner join employee e 
+	 	on e.department = d.department_id and d.department_id = 1)
+intersect
+(select e.department, e.employee_name, l.location_id  from _location l 
+	inner join employee e 
+	 	on e._location = l.location_id and l.location_id = 1);
+
 
