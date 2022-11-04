@@ -22,12 +22,10 @@ public class Lab8 {
 	
 	public String reverse(String str1) {
 		try {
-			int rcounter = str1.length()-1;
 		
-			for(int i=0; i<str1.length(); i++) {
+			for(int i=str1.length()-1; i>-1; i--) {
 			
-				st2 = (new StringBuffer(st2)).append(str1.charAt(rcounter)).toString();
-				rcounter--;
+				st2 = (new StringBuffer(st2)).append(str1.charAt(i)).toString();
 			}
 		}catch(RuntimeException e) {
 			e.printStackTrace();
