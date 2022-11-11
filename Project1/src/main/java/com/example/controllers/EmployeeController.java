@@ -28,12 +28,15 @@ public class EmployeeController {
 		
 		System.out.println(e);
 		
-		eServ.registerEmployee(e);
-		
-		//Set our status code to OK
-		context.status(201);
-		context.result(objectMapper.writeValueAsString(e));
-		
+		boolean emailExist = eServ.registerEmployee(e);
+		 if(emailExist == false) {
+			 context.status(403);
+			 context.result(objectMapper.writeValueAsString("Invalid entry"));
+		 }else {
+			 //Set our status code to OK
+			 context.status(201);
+			 context.result(objectMapper.writeValueAsString(e));
+		 }
 	};
 	
 	public Handler handleGetAll = (context) -> {
@@ -43,16 +46,20 @@ public class EmployeeController {
 		context.result(objectMapper.writeValueAsString(eList));
 	};
 	
-	/*public Handler handleLogin = (context) -> {
+	public Handler handleLogin = (context) -> {
 		Map<String, String> body = objectMapper.readValue(context.body(), LinkedHashMap.class);
 		
-		Employee loggedIn = eServ.login(body.get("email"));
+		Employee loggedIn = eServ.login(body.get("email"), body.get("password"));
 		
+		if(loggedIn==null)
+			context.status(404);
+		else {
 		context.status(200);
-		context.result(objectMapper.writeValueAsString(loggedIn));
-		
+		context.result(objectMapper.writeValueAsString(loggedIn.getFirstName() + " " + loggedIn.getLastName() +" is logged in!"));
+		}
 	};
 	
+	/*
 	public Handler handleDelete = (context) -> {
 		Map<String, String> body = objectMapper.readValue(context.body(), LinkedHashMap.class);
 		

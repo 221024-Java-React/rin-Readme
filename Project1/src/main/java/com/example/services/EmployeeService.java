@@ -20,10 +20,10 @@ public class EmployeeService {
 		this.employeeDao = employeeDao;
 	}
 	
-	public void registerEmployee(Employee e) {
+	public boolean registerEmployee(Employee e) {
 		try {
-			employeeDao.addEmployee(e);
-			LoggingUtil.getLogger().warn("User: " + e + " was registered");
+			return employeeDao.addEmployee(e);
+			//LoggingUtil.getLogger().warn("User: " + e + " was registered");
 		} catch(Exception ex) {
 			System.out.println("Enters the employee exist catch");
 			LoggingUtil.getLogger().warn("User with email " + e.getEmail() + " tried to register a second time");
@@ -35,23 +35,31 @@ public class EmployeeService {
 		return employeeDao.getAllEmployee();
 	}
 	
-/*	public Employee login(String email) {
-		Employee e = employeeDao.getEmployeeByEmail(email);
+	public Employee login(String email, String password) {
 		
-		if(e == null) {
-			LoggingUtil.getLogger().warn("User with email " + email + " had a failed login attempt");
+		try {
 			
-			//Instead of returning null, we could throw an exception and allow Javalin to send a custom response
-			throw new EmployeeDoesNotExistException();
+			Employee e = employeeDao.getEmployeeByEmail(email, password);
+			
+			if(e != null) {
+				LoggingUtil.getLogger().info("User " + email + " logged in");
+				return e;
+			}
+			else {
+				
+				LoggingUtil.getLogger().warn("Either email or password was incorrect " + email + " had a failed login attempt");
+				//Instead of returning null, we could throw an exception and allow Javalin to send a custom response
+				throw new EmployeeDoesNotExistException();
+			}
+		}catch(Exception ex) {
+			//ex.printStackTrace();
 		}
-		
 		//insert validation logic here
 		//p = new Person();
-		
-		LoggingUtil.getLogger().info("User " + email + " logged in");
-		return e;
+		return null;
 	}
 	
+	/*
 	public void removeEmployee(String email) {
 		employeeDao.deleteEmployee(email);
 		LoggingUtil.getLogger().info("User " + email + " was removed from the system");

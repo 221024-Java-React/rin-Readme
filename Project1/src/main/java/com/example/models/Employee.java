@@ -10,12 +10,12 @@ public class Employee{
 	private String email;
 	private String password;
 	
-	
 	protected Ticket reimbursementTicket = new Ticket();
 	protected ArrayList<Ticket> reimbursementTicketsList = new ArrayList <Ticket>();
 	
 	public Employee() {
 		super();
+		this.type = EmployeeType.ASSOCIATE;
 	}
 	
 	public Employee(int id, EmployeeType type, String firstName, String lastName, String email, String password) {

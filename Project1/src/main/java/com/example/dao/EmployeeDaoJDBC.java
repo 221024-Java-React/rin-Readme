@@ -21,60 +21,34 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 	private JDBCConnectionUtil conUtil = JDBCConnectionUtil.getInstance();
 
 	@Override
-	public void addEmployee(Employee e) throws SQLException{
+	public boolean addEmployee(Employee e) throws SQLException{
 
 		//We need a connection to create a statment
 		Connection connection = conUtil.getConnection();
-		
-		int type = e.getType().ordinal() + 1;
-		type = 1;
-	
-		//The actual SQL query we want to execute
-		String sql = "INSERT INTO employee (type, first_name, last_name, email, password) VALUES"
-				+ "(" + type + ",'" + e.getFirstName() +"','" + e.getLastName() + "','" +
-				e.getEmail() + "','" + e.getPassword() + "')";
-	
-		//Get the statement to actually make our query
-		Statement statement = connection.createStatement();
-		
-		//Execute the SQL query
-		statement.execute(sql);
-	
-	/*
-		//PreparedStatement prepared;
-		try {
-		if(checkEmailIsAvailable(e.getEmail())) {
-			
+		String sql;
+		Statement statement;
+		//try {
+			if(checkEmailIsAvailable(e.getEmail())==true) {
+				int type = e.getType().ordinal() + 1;
 				
-			
-			
-			
-			String sql =" insert into employee (type, first_name, last_name, email, password)"
-				+ " values(?,?,?,?,?)";
-		
-			prepared = connection.prepareStatement(sql);
-		
-			int type = e.getType().ordinal() + 1;
-		
-			prepared.setInt(1, type);
-			prepared.setString(2, e.getFirstName());
-			prepared.setString(3, e.getLastName());
-			prepared.setString(4, e.getEmail());
-			prepared.setString(5, e.getPassword());
-		
-			prepared.execute(sql);
+				sql = "INSERT INTO employee (type, first_name, last_name, email, password) VALUES"
+					+ "(" + type + ",'" + e.getFirstName() +"','" + e.getLastName() + "','" +
+					e.getEmail() + "','" + e.getPassword() + "')";
+				
+				statement = connection.createStatement();
+				statement.execute(sql);
+				System.out.println("email is available, check is true");
+				return true;
+			}
+			System.out.println("email is not available, check is false");
 			return false;
-			
-		}else {
-			System.out.println("email already exist");
-		}
-		}catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		*/
+		//}catch (SQLException ex) {
+				//ex.printStackTrace();
+		//}
 	}
 		
 	public boolean checkEmailIsAvailable(String email) throws SQLException {
+		System.out.println("Enters checkEmailIsAvailble");
 		Connection connection = conUtil.getConnection();
 		
 		PreparedStatement prepared;
@@ -82,8 +56,10 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 		String sql = "select * from employee where email='" + email + "'";
 		prepared = connection.prepareStatement(sql);
 		ResultSet result = prepared.executeQuery();
-		if (result.next())
+		if (result.next()) {
 			return false;
+		}
+		
 		return true;
 	}
 
@@ -133,15 +109,16 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 		return eList;
 	}
 
-/*	@Override
-	public Employee getEmployeeByEmail(String email) {
+	@Override
+	public Employee getEmployeeByEmail(String email, String password) {
 		Employee e = null;
 		
 		try {
 			
 			Connection connection = conUtil.getConnection();
 			
-			String sql = "SELECT * FROM employee WHERE email='" + email + "'";
+			String sql = "SELECT * FROM employee WHERE email='" + email 
+					+ "' AND password='" + password + "'";
 			
 			Statement statement = connection.createStatement();
 			
@@ -165,11 +142,13 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 			
 		} catch(SQLException ex) {
 			ex.printStackTrace();
+			System.out.println("Enter sql catch");
 		}
 		
 		return e;
 	}
 
+	/*
 	@Override
 	public void deleteEmployee(String email) {
 
@@ -211,10 +190,11 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 		}
 		
 	}
-
+*/
+	
 	@Override
 	public Employee getEmployeeById(int id) {
-		
+		System.out.println("enters getemployeeid dao");
 		Employee e = null;
 
 		try {
@@ -244,12 +224,10 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 				e.setEmail(result.getString(5));
 				e.setPassword(result.getString(6));
 			}
-			
 		} catch(SQLException ex) {
 			ex.printStackTrace();
 		}
-
+		
 		return e;
-	}*/
-
+	}
 }

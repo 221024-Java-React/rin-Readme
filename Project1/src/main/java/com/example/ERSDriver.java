@@ -1,15 +1,15 @@
 package com.example;
 
 import com.example.controllers.EmployeeController;
+import com.example.controllers.TicketController;
 import com.example.dao.EmployeeDao;
-import com.example.dao.EmployeeDaoFile;
 import com.example.dao.EmployeeDaoJDBC;
+import com.example.dao.TicketDao;
+import com.example.dao.TicketDaoJDBC;
 import com.example.exceptions.EmployeeAlreadyExistException;
 import com.example.exceptions.EmployeeDoesNotExistException;
-//import com.example.models.Employee;
-//import com.example.models.Manager;
 import com.example.services.EmployeeService;
-
+import com.example.services.TicketService;
 
 import io.javalin.Javalin;
 
@@ -21,7 +21,11 @@ public class ERSDriver {
 		EmployeeDao eDao = new EmployeeDaoJDBC();
 		EmployeeService eServ = new EmployeeService(eDao);
 		EmployeeController eController = new EmployeeController(eServ);
-				
+		
+		TicketDao tDao = new TicketDaoJDBC();
+		TicketService tServ = new TicketService(tDao);
+		TicketController tController = new TicketController(tServ);
+		
 		Javalin app = Javalin.create(config->{
 			config.plugins.enableCors(cors->{
 				cors.add(it-> {
@@ -35,20 +39,28 @@ public class ERSDriver {
 		
 		app.post("/employee/register", eController.handleRegister);
 		app.get("/employee/", eController.handleGetAll);
-		//app.post("employee/login", eController.handleLogin);
+		app.post("/employee/login", eController.handleLogin);
 		//app.delete("/employee/", eController.handleDelete);
 		//app.put("/employee/", eController.handleUpdate);
 		
 		//We can also register handlers to deal with exceptions
-		app.exception(EmployeeDoesNotExistException.class, (ex, context) -> {
-		context.status(401);
-		context.result("You were unable to login");
-		});
+		//app.exception(EmployeeDoesNotExistException.class, (ex, context) -> {
+		//context.status(401);
+		//context.result("You were unable to login");
+		//});
 				
-		app.exception(EmployeeAlreadyExistException.class, (ex, context)-> {
-		context.status(409);
-		context.result("You are not able to register an account with an email which already exists");
-		});
+		//app.exception(EmployeeAlreadyExistException.class, (ex, context)-> {
+		//context.status(409);
+		//context.result("You are not able to register an account with an email which already exists");
+		//});
+		
+		app.post("/ticket/submit", tController.handleSubmitTicket);
+		app.get("/ticket/", tController.handleGetAllTicket);
+		app.get("/ticket/status", tController.handleGetAllTicketByStatus);
+		
+		app.patch("/ticket/", tController.handleUpdateTicket);
+		app.delete("/ticket/", tController.handleDeleteATicket);
+		
 		
 		//finally we start the application
 		app.start(8001);

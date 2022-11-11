@@ -40,7 +40,7 @@ public class EmployeeDaoFile implements EmployeeDao {
 		return eList;
 	}
 
-/*	@Override
+	@Override
 	public Employee getEmployeeByEmail(String email) {
 
 		List<Employee> eList = io.readOject();
@@ -58,7 +58,8 @@ public class EmployeeDaoFile implements EmployeeDao {
 		//return null;
 		throw new EmployeeDoesNotExistException();
 	}
-
+	
+/*
 	@Override
 	public void deleteEmployee(String email) {
 
